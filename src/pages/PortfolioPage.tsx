@@ -7,13 +7,13 @@ import type { Repo } from "@/components/RepoCard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-const API_BASE = "/api/v1";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const PortfolioPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const username = searchParams.get("user");
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<GitHubUser | null>(null);
   const [repos, setRepos] = useState<Repo[]>([]);
@@ -28,7 +28,7 @@ const PortfolioPage = () => {
     setIsLoading(true);
 
     try {
-      const userRes = await axios.get(`${API_BASE}/github/${username}`);
+      const userRes = await axios.get(`${API_BASE}/api/v1/github/${username}`);
       const { profile, repos: reposData } = userRes.data;
 
       const transformedUser: GitHubUser = {
@@ -54,7 +54,7 @@ const PortfolioPage = () => {
         language: repo.language,
       }));
 
-      await axios.post(`${API_BASE}/portfolio`, {
+      await axios.post(`${API_BASE}/api/v1/portfolio`, {
         github_username: username,
         data: userRes.data,
       });
